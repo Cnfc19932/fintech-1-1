@@ -4,23 +4,18 @@
  * @return {{min: number, max: number}} объект с минимумом и максимумом
  * '1 и 6.45, -2, но 8, а затем 15, то есть 2.7 и -1028' => { min: -1028, max: 15 }
  */
-function getMinMax(string) {
+  function getMinMax(string) {
     let arr = string.match(/[+-]?([0-9]*[.])?[0-9]+/g);
-    let min,max;
-  
-    for (a of arr){
-      a = parseFloat(a);
-      if (typeof a === 'number' && !isNaN(a)){
-        if (min === undefined || min > a) min = a;
-        if (max === undefined || max < a) max = a;
-      }
-    }
-    return {min: min, max: max};
-    
+    if (typeof string != 'string' || !arr) return {min: NaN, max: NaN};
+    arr = arr.map(a => parseFloat(a)).filter(a => !isNaN(a));
+    return {min: Math.min.apply(null, arr), max: Math.max.apply(null, arr)};
   }
   
-  //getMinMax('1 и 6.45, -2, но 8, а затем 15, то есть 2.7 и -1028');
-  //getMinMax('1.32 32.2 .3 123 13.0001');
+  /*
+  console.log(getMinMax('1 и 6.45, -2, но 8, а затем 15, то есть 2.7 и -1028'));
+  console.log(getMinMax('1.32 32.2 .3 123 13.0001'));
+  console.log(getMinMax(''));
+  */
   /* ============================================= */
   
   /**
@@ -42,31 +37,22 @@ function getMinMax(string) {
    * @param {number} x номер числа
    * @return {number} число под номером х
    */
+  //'use strict';
   function fibonacciWithCache(x) {
-    //console.log(this.cache);
-    if (this.cache === undefined){
-      this.cache = {};
+    //console.log(fibonacciWithCache.cache, x, fibonacciWithCache);
+    if (fibonacciWithCache.cache === undefined){
+      fibonacciWithCache.cache = {};
     }
-    if (x in this.cache){
-      return this.cache[x];
+    if (x in fibonacciWithCache.cache){
+      return fibonacciWithCache.cache[x];
     }else{
-      let a;
-      switch(x) {
-        case 1: 
-          a = 1;
-          break;
-        case 0: 
-          a = 0;
-          break;
-        default:
-          a = fibonacciWithCache(x-2) + fibonacciWithCache(x-1);
-          break;
-      }
-      this.cache[x] = a;
-      return a;
+      fibonacciWithCache.cache[x] = x <= 1 ? x : fibonacciWithCache(x-2) + fibonacciWithCache(x-1);
+      return fibonacciWithCache.cache[x];
     }
   }
   
+  //console.log(fibonacciWithCache(50));
+  //console.log(fibonacciWithCache(32));
   /* ============================================= */
   
   /**
@@ -85,7 +71,7 @@ function getMinMax(string) {
    * @return {string}
    */
   function printNumbers(max, cols) {
-    let output = '', count_numbers = max + 1, n = 0, arr = [];
+    let output = '', count_numbers = max + 1, n = 0;
     const lines = Math.ceil(count_numbers/cols);
   
     const format = (s) => {
@@ -95,11 +81,11 @@ function getMinMax(string) {
   
     if (cols === 0) return ;
   
-    for (let i = 0; i < lines; i++) arr[i] = [];
-  
+    let arr = Array.from({ length: lines }).map(a => Array.from({ length: cols }));
+
     for (let i = 0; i < lines; i++)
       for (let j = 0; j < cols; j++){
-        arr[i][j] = n < count_numbers ? true : false;
+        arr[i][j] = n < count_numbers;
         n++;
       }
     n = 0;
@@ -125,6 +111,7 @@ function getMinMax(string) {
   //console.log(printNumbers(1, 3),'\n');
   //console.log(printNumbers(11, 3),'\n');
   //console.log(printNumbers(12, 3),'\n');
+  
   //printNumbers(11, 1);
   //printNumbers(11, 2);
   //printNumbers(7, 2);
@@ -137,6 +124,7 @@ function getMinMax(string) {
    */
   function rle(input) {
     let last,i,output = '',j = 0;
+    if (input === '') return '';
     const count = (x) => x === 1 ? '' : x;
     for (s of input){
       j++;
@@ -151,8 +139,8 @@ function getMinMax(string) {
           last = s;
         }
       }
-      if (j === input.length) output += s + count(i);
     }
+    output += last + count(i);
     return output;
   }
   
