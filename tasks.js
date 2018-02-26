@@ -6,7 +6,7 @@
  */
 function getMinMax(string) {
   let arr = string.match(/[+-]?([0-9]*[.])?[0-9]+/g);
-  if (typeof string != 'string' || !arr) return {min: NaN, max: NaN};
+  if (typeof string != 'string' || arr === null) return {min: NaN, max: NaN};
   arr = arr.map(a => parseFloat(a)).filter(a => !isNaN(a));
   return {min: Math.min.apply(null, arr), max: Math.max.apply(null, arr)};
 }
